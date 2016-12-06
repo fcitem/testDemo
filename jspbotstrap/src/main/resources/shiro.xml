@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<import resource="classpath:spring-mybatis.xml"/>
+	<!-- <bean id="hashedCredentialsMatcher"  class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">  
+        <property name="hashAlgorithmName" value="MD5" />  
+        <property name="storedCredentialsHexEncoded" value="true" />  
+        <property name="hashIterations" value="1" />  
+	</bean>   -->
+	<!--  加密/匹配验证的配置-->
+	<bean id="passwordMatcher" class="org.apache.shiro.authc.credential.PasswordMatcher">
+		<property name="passwordService">
+		<bean class="org.apache.shiro.authc.credential.DefaultPasswordService">
+			<property name="hashService">
+				<bean class="org.apache.shiro.crypto.hash.DefaultHashService">
+					<property name="hashAlgorithmName" value="md5"></property>
+					<property name="generatePublicSalt" value="true"></property>
+					<property name="hashIterations" value="2"></property>
+				</bean>
+			</property>
+		</bean>
+		</property>
+	</bean>
+	<!--  Sesion管理  -->
+	<bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.MemorySessionDAO"/>
+	<bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+		<property name="sessionDAO" ref="sessionDAO"/>
+		<property name="sessionValidationScheduler" >
+			<bean class="org.apache.shiro.session.mgt.ExecutorServiceSessionValidationScheduler">
+				<property name="interval" value="2000"></property>
+			</bean>
+		</property>
+	</bean>
+	<bean id="myRealm" class="org.apache.shiro.realm.jdbc.JdbcRealm">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="credentialsMatcher" ref="passwordMatcher"></property>
+		<property name="authenticationQuery" value="select PASSWORD from users where USERNAME=?"></property>
+		<property name="userRolesQuery" value="select ROLE from user_role inner join users on user_role.USER_ID=users.user_id where users.username=?"></property>
+		<property name="permissionsQuery" value="select p.per_Name from permis as p inner join user_role as r on r.user_id=p.role_id where r.role=?"></property>
+		<!-- False时不会使用permissionsQuery的SQL去查询权限资源。设置为true才会去执行s -->
+		<property name="permissionsLookupEnabled" value="true"></property>
+	</bean>
+	<!-- <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager"/> -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="myRealm"></property>
+		<property name="sessionManager" ref="sessionManager"/>
+	</bean>
+	<bean id="logout" class="org.apache.shiro.web.filter.authc.LogoutFilter">
+		<property name="redirectUrl" value="/login/login.jsp"></property>
+	</bean>
+	<bean id="shiroFilter" name="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager"></property>
+		<property name="loginUrl" value="/login/login.jsp"></property>
+		<property name="unauthorizedUrl" value="/"></property>
+		<!-- <property name="successUrl" value="/menu/menuFile.jsp"></property> -->
+		<property name="filterChainDefinitions">
+			<value>
+				/login/login.jsp=anon
+				<!-- /menu/menuFile.jsp=anon -->
+				/logout=anon
+				/menu/register.jsp=anon
+				/menu/showOrder.jsp=authc
+				/carInfo/buycarpage=authc <!--  拦截controller的权限-->
+				/user/*=authc
+				<!-- /menu/buyCarpage.jsp=autnc -->
+				<!-- /loginValidate=auth -->
+			</value>
+		</property>
+	</bean>
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+</beans>

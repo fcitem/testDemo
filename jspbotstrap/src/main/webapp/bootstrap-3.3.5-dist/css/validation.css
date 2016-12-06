@@ -1,0 +1,85 @@
+input.error { border: 1px solid red; }
+textarea.error{border: 1px solid red; }
+label.error {
+  padding-left:240px;
+
+  padding-bottom: 2px;
+
+  font-weight: bold;
+
+  color: red;
+  
+  cursor: text;
+}
+#newCar label.error {
+	
+  padding-left:10px;
+  padding-bottom: 2px;
+
+  font-weight: bold;
+
+  color: red;
+}
+#phone label.error {
+	
+  padding-left:0px;
+  padding-bottom: 2px;
+
+  font-weight: bold;
+
+  color: red;
+}
+#qq label.error {
+	
+  padding-left:0px;
+  
+  padding-bottom: 2px;
+
+  font-weight: bold;
+
+  color: red;
+}
+#address label.error {
+	
+  padding-left:0px;
+  padding-bottom: 2px;
+
+  font-weight: bold;
+
+  color: red;
+}
+#repeat label.error {
+	
+  padding-left:210px;
+  padding-bottom: 2px;
+
+  font-weight: bold;
+
+  color: red;
+}
+#userrole label.error {
+	
+  padding-left:20px;
+  padding-bottom: 2px;
+
+  font-weight: bold;
+
+  color: red;
+}
+#restpwd1 label.error {
+  padding-left:150px;
+  padding-bottom: 2px;
+  font-weight: bold;
+  font-size:15px;
+  color: red;
+}
+#restpwd2 label.error {
+  padding-left:150px;
+  padding-bottom: 2px;
+  font-weight: bold;
+  font-size:15px;
+  color: red;
+}
+.username label.checked {
+/*   background:url("./demo/images/checked.gif") no-repeat 0px 0px; */
+}

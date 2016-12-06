@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fc.dao.ProOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.fc.bean.ProOrder" >
+    <id column="orderId" property="orderid" jdbcType="VARCHAR" />
+    <result column="userId" property="userid" jdbcType="VARCHAR" />
+    <result column="buyerId" property="buyerid" jdbcType="VARCHAR" />
+    <result column="orderTime" property="ordertime" jdbcType="VARCHAR" />
+    <result column="buyerPhone" property="buyerphone" jdbcType="VARCHAR" />
+    <result column="orderState" property="orderstate" jdbcType="VARCHAR" />
+    <result column="proId" property="proid" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="BaseResultMap2" type="com.fc.bean.orderInfo" >
+    <id column="orderId" property="orderid" jdbcType="VARCHAR" />
+    <result column="userId" property="userid" jdbcType="VARCHAR" />
+    <result column="buyerId" property="buyerid" jdbcType="VARCHAR" />
+    <result column="orderTime" property="ordertime" jdbcType="VARCHAR" />
+    <result column="buyerPhone" property="buyerphone" jdbcType="VARCHAR" />
+    <result column="orderState" property="orderstate" jdbcType="VARCHAR" />
+    <result column="username" property="buyername" jdbcType="VARCHAR" />
+    <result column="proId" property="proid" jdbcType="VARCHAR" />
+    <result column="proName" property="proname" jdbcType="VARCHAR" />
+    <result column="proImg" property="proimg" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    orderId, userId, buyerId, orderTime, buyerPhone, orderState,proId
+  </sql>
+  <sql id="Base_Column_List2" >
+    o.orderId, o.userId, o.buyerId, o.orderTime, o.buyerPhone, o.proId,o.orderState,u.username,p.proName,p.proImg
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.fc.bean.ProOrderExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from pro_order
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectOrderInfo" resultMap="BaseResultMap2" parameterType="com.fc.bean.ProOrderExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List2" />
+    from pro_order as o inner join users as u inner join product as p on o.buyerId=u.USER_ID and o.proId=p.proId
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from pro_order
+    where orderId = #{orderid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from pro_order
+    where orderId = #{orderid,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.fc.bean.ProOrderExample" >
+    delete from pro_order
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.fc.bean.ProOrder" >
+    insert into pro_order (orderId, userId, buyerId, 
+      orderTime, buyerPhone, orderState,proId
+      )
+    values (#{orderid,jdbcType=VARCHAR}, #{userid,jdbcType=VARCHAR}, #{buyerid,jdbcType=VARCHAR}, 
+      #{ordertime,jdbcType=VARCHAR}, #{buyerphone,jdbcType=VARCHAR}, #{orderstate,jdbcType=VARCHAR},
+      #{proid,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.fc.bean.ProOrder" >
+    insert into pro_order
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orderid != null" >
+        orderId,
+      </if>
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="buyerid != null" >
+        buyerId,
+      </if>
+      <if test="ordertime != null" >
+        orderTime,
+      </if>
+      <if test="buyerphone != null" >
+        buyerPhone,
+      </if>
+      <if test="orderstate != null" >
+        orderState,
+      </if>
+       <if test="proid != null" >
+        proId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orderid != null" >
+        #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerid != null" >
+        #{buyerid,jdbcType=VARCHAR},
+      </if>
+      <if test="ordertime != null" >
+        #{ordertime,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerphone != null" >
+        #{buyerphone,jdbcType=VARCHAR},
+      </if>
+      <if test="orderstate != null" >
+        #{orderstate,jdbcType=VARCHAR},
+      </if>
+      <if test="proId != null" >
+        #{proid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.fc.bean.ProOrderExample" resultType="java.lang.Integer" >
+    select count(*) from pro_order
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update pro_order
+    <set >
+      <if test="record.orderid != null" >
+        orderId = #{record.orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userid != null" >
+        userId = #{record.userid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerid != null" >
+        buyerId = #{record.buyerid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ordertime != null" >
+        orderTime = #{record.ordertime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerphone != null" >
+        buyerPhone = #{record.buyerphone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.orderstate != null" >
+        orderState = #{record.orderstate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.proid != null" >
+        orderState = #{record.proid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update pro_order
+    set orderId = #{record.orderid,jdbcType=VARCHAR},
+      userId = #{record.userid,jdbcType=VARCHAR},
+      buyerId = #{record.buyerid,jdbcType=VARCHAR},
+      orderTime = #{record.ordertime,jdbcType=VARCHAR},
+      buyerPhone = #{record.buyerphone,jdbcType=VARCHAR},
+      orderState = #{record.orderstate,jdbcType=VARCHAR},
+      proId = #{record.proid,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fc.bean.ProOrder" >
+    update pro_order
+    <set >
+      <if test="userid != null" >
+        userId = #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerid != null" >
+        buyerId = #{buyerid,jdbcType=VARCHAR},
+      </if>
+      <if test="ordertime != null" >
+        orderTime = #{ordertime,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerphone != null" >
+        buyerPhone = #{buyerphone,jdbcType=VARCHAR},
+      </if>
+      <if test="orderstate != null" >
+        orderState = #{orderstate,jdbcType=VARCHAR},
+      </if>
+      <if test="proid != null" >
+        proId = #{proid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where orderId = #{orderid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fc.bean.ProOrder" >
+    update pro_order
+    set userId = #{userid,jdbcType=VARCHAR},
+      buyerId = #{buyerid,jdbcType=VARCHAR},
+      orderTime = #{ordertime,jdbcType=VARCHAR},
+      buyerPhone = #{buyerphone,jdbcType=VARCHAR},
+      orderState = #{orderstate,jdbcType=VARCHAR},
+      proId = #{proid,jdbcType=VARCHAR}
+    where orderId = #{orderid,jdbcType=VARCHAR}
+  </update>
+</mapper>
